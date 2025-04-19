@@ -56,6 +56,7 @@ class Settings(BaseSettings):
 
     run: RunConfig = RunConfig()  # Конфигурация запуска приложения
     db: DatabaseConfig = DatabaseConfig()  # Конфигурация базы данных
+    auth_jwt: AuthJWT = AuthJWT()
 
 
 settings = Settings()

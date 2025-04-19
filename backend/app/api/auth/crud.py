@@ -1,5 +1,5 @@
 # [file name]: app/auth/crud.py
-from sqlalchemy import select
+from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models.users import User

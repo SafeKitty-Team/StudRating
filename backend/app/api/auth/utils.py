@@ -22,8 +22,12 @@ def create_access_token(data: dict) -> str:
     expire = datetime.utcnow() + timedelta(minutes=settings.auth_jwt.access_token_expire_minutes)
     to_encode.update({"exp": expire})
 
-    with open(settings.auth_jwt.private_key_path, "r") as key_file:
-        private_key = key_file.read()
+    with open(settings.auth_jwt.private_key_path, "rb") as key_file:  # Обратите внимание на 'rb'
+        private_key = key_file.read().decode('utf-8')  # Декодируем байты в строку
+        # print(private_key)
+
+    if "-----BEGIN" not in private_key:
+        raise ValueError("Invalid private key format")
 
     return jwt.encode(
         to_encode,
@@ -66,3 +70,4 @@ def hash_password(password: str) -> str:
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
+

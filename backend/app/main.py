@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from core.models import db_helper
 from core.config import settings
 from api import router as api_router
-
+from api.auth.router import router as auth_rout
 
 @asynccontextmanager
 async def lifespan(lifespan_app: FastAPI):
@@ -18,6 +18,7 @@ async def lifespan(lifespan_app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(api_router)
+app.include_router(auth_rout)
 
 if __name__ == "__main__":
     uvicorn.run(

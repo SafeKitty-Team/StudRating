@@ -10,4 +10,9 @@ class TokenData(BaseModel):
 
 class UserCreate(BaseModel):
     email: EmailStr
-    password: str   
+    password: str
+
+
+class CustomLoginForm(BaseModel):
+    email: str
+    password: str

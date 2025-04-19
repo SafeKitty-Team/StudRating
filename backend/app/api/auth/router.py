@@ -4,7 +4,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import db_helper
-from .schemas import Token, UserCreate
+from .schemas import Token, UserCreate, CustomLoginForm
 from .utils import (
     create_access_token,
     get_current_user,
@@ -15,6 +15,15 @@ from .crud import get_user_by_email
 from core.models.users import User, UserRole
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
+
+
+async def authenticate_user(email: str, password: str, session: AsyncSession) -> User | None:
+    user = await get_user_by_email(email, session)
+    if not user:
+        return None
+    if not verify_password(password, user.password):
+        return None
+    return user
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
@@ -42,12 +51,12 @@ async def register(
     return {"message": "User created successfully"}
 
 
-@router.post("/login", response_model=Token)
+@router.get("/login", response_model=Token, include_in_schema=True)
 async def login(
-        form_data: OAuth2PasswordRequestForm = Depends(),
+        form_data: CustomLoginForm = Depends(),
         session: AsyncSession = Depends(db_helper.session_getter),
 ):
-    user = await authenticate_user(form_data.username, form_data.password, session)
+    user = await authenticate_user(form_data.email, form_data.password, session)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -64,10 +73,3 @@ async def logout():
     return {"message": "Successfully logged out"}
 
 
-async def authenticate_user(email: str, password: str, session: AsyncSession) -> User | None:
-    user = await get_user_by_email(email, session)
-    if not user:
-        return None
-    if not verify_password(password, user.password):
-        return None
-    return user
