@@ -31,8 +31,12 @@ class User(IDMixin, TimestampMixin, Base):
     """
 
     email: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
-    password: Mapped[bytes] = mapped_column(LargeBinary, nullable=False)
-    roles: Mapped[UserRole] = mapped_column(Enum(UserRole), default=UserRole.user)
+    password: Mapped[str] = mapped_column(String, nullable=False)
+    roles: Mapped[UserRole] = mapped_column(
+        Enum(UserRole, name="user_role"),
+        default=UserRole.user,
+        nullable=False,
+    )
 
     def __repr__(self) -> str:
         return (
