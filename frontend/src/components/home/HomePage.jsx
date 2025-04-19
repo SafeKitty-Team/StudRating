@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Search, TrendingUp, Star, ThumbsUp, BookOpen, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Search, TrendingUp, Star, ThumbsUp, BookOpen, ArrowRight, Users, Library } from 'lucide-react';
 
 // Компонент карточки курса
 const CourseCard = ({ course }) => {
@@ -17,15 +18,15 @@ const CourseCard = ({ course }) => {
             <div className="flex flex-wrap gap-2 mt-auto mb-3">
                 {course.tags.map((tag, index) => (
                     <span key={index} className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs">
-            {tag}
-          </span>
+                        {tag}
+                    </span>
                 ))}
             </div>
             <div className="flex justify-between items-center text-sm mt-1">
                 <span className="text-gray-500">Преподаватель: {course.professor}</span>
-                <span className="flex items-center text-indigo-600 font-medium hover:text-indigo-800 cursor-pointer">
-          Подробнее <ArrowRight className="h-4 w-4 ml-1" />
-        </span>
+                <Link to={`/courses/${course.id}`} className="flex items-center text-indigo-600 font-medium hover:text-indigo-800">
+                    Подробнее <ArrowRight className="h-4 w-4 ml-1" />
+                </Link>
             </div>
         </div>
     );
@@ -47,15 +48,15 @@ const ProfessorCard = ({ professor }) => {
             <div className="flex flex-wrap gap-2 mt-3 mb-3">
                 {professor.tags.map((tag, index) => (
                     <span key={index} className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs">
-            {tag}
-          </span>
+                        {tag}
+                    </span>
                 ))}
             </div>
             <div className="flex justify-between items-center text-sm mt-1">
                 <span className="text-gray-500">{professor.courseCount} курсов</span>
-                <span className="flex items-center text-indigo-600 font-medium hover:text-indigo-800 cursor-pointer">
-          Подробнее <ArrowRight className="h-4 w-4 ml-1" />
-        </span>
+                <Link to={`/professors/${professor.id}`} className="flex items-center text-indigo-600 font-medium hover:text-indigo-800">
+                    Подробнее <ArrowRight className="h-4 w-4 ml-1" />
+                </Link>
             </div>
         </div>
     );
@@ -136,12 +137,12 @@ const HomePage = () => {
                         и преподавателей на основе отзывов других студентов.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 mb-6">
-                        <button className="bg-white text-indigo-700 font-medium py-3 px-6 rounded-lg hover:bg-indigo-100 transition-colors">
+                        <Link to="/courses" className="bg-white text-indigo-700 font-medium py-3 px-6 rounded-lg hover:bg-indigo-100 transition-colors">
                             Найти курс
-                        </button>
-                        <button className="bg-indigo-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-indigo-500 transition-colors">
+                        </Link>
+                        <Link to="/add-review" className="bg-indigo-600 text-white font-medium py-3 px-6 rounded-lg hover:bg-indigo-500 transition-colors">
                             Оставить отзыв
-                        </button>
+                        </Link>
                     </div>
 
                     {/* Статистика */}
@@ -184,10 +185,10 @@ const HomePage = () => {
                         <TrendingUp className="h-6 w-6 mr-2 text-indigo-600" />
                         Топ курсов
                     </h2>
-                    <a href="#" className="text-indigo-600 flex items-center hover:text-indigo-800">
+                    <Link to="/courses" className="text-indigo-600 flex items-center hover:text-indigo-800">
                         Все курсы
                         <ArrowRight className="h-5 w-5 ml-1" />
-                    </a>
+                    </Link>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {topCourses.map(course => (
@@ -203,10 +204,10 @@ const HomePage = () => {
                         <Star className="h-6 w-6 mr-2 text-indigo-600" />
                         Лучшие преподаватели
                     </h2>
-                    <a href="#" className="text-indigo-600 flex items-center hover:text-indigo-800">
+                    <Link to="/professors/1" className="text-indigo-600 flex items-center hover:text-indigo-800">
                         Все преподаватели
                         <ArrowRight className="h-5 w-5 ml-1" />
-                    </a>
+                    </Link>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {topProfessors.map(professor => (
@@ -222,10 +223,10 @@ const HomePage = () => {
                         <Library className="h-6 w-6 mr-2 text-indigo-600" />
                         Факультеты и кафедры
                     </h2>
-                    <a href="#" className="text-indigo-600 flex items-center hover:text-indigo-800">
+                    <Link to="/departments/2" className="text-indigo-600 flex items-center hover:text-indigo-800">
                         Все кафедры
                         <ArrowRight className="h-5 w-5 ml-1" />
-                    </a>
+                    </Link>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {["Компьютерные науки", "Математика и механика", "Экономика", "Физика"].map((faculty, index) => (

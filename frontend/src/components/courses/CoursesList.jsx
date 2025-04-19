@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Search, Filter, Star, BookOpen, ChevronDown, X, SortAsc, ArrowUpDown } from 'lucide-react';
 
 const CoursesList = () => {
@@ -341,42 +342,42 @@ const CoursesList = () => {
 
                             {selectedFilters.departments.map((dept, index) => (
                                 <span key={`dept-${index}`} className="bg-indigo-100 text-indigo-700 text-xs rounded-full px-3 py-1 flex items-center">
-                  {dept}
+                                    {dept}
                                     <X
                                         className="h-3 w-3 ml-1 cursor-pointer"
                                         onClick={() => removeFilter('departments', dept)}
                                     />
-                </span>
+                                </span>
                             ))}
 
                             {selectedFilters.difficulty.map((level, index) => (
                                 <span key={`diff-${index}`} className="bg-indigo-100 text-indigo-700 text-xs rounded-full px-3 py-1 flex items-center">
-                  {level}
+                                    {level}
                                     <X
                                         className="h-3 w-3 ml-1 cursor-pointer"
                                         onClick={() => removeFilter('difficulty', level)}
                                     />
-                </span>
+                                </span>
                             ))}
 
                             {selectedFilters.usefulness.map((level, index) => (
                                 <span key={`use-${index}`} className="bg-indigo-100 text-indigo-700 text-xs rounded-full px-3 py-1 flex items-center">
-                  {level}
+                                    {level}
                                     <X
                                         className="h-3 w-3 ml-1 cursor-pointer"
                                         onClick={() => removeFilter('usefulness', level)}
                                     />
-                </span>
+                                </span>
                             ))}
 
                             {selectedFilters.tags.map((tag, index) => (
                                 <span key={`tag-${index}`} className="bg-indigo-100 text-indigo-700 text-xs rounded-full px-3 py-1 flex items-center">
-                  {tag}
+                                    {tag}
                                     <X
                                         className="h-3 w-3 ml-1 cursor-pointer"
                                         onClick={() => removeFilter('tags', tag)}
                                     />
-                </span>
+                                </span>
                             ))}
 
                             <button
@@ -407,8 +408,8 @@ const CoursesList = () => {
                                 <div className="flex flex-wrap gap-2 mb-2">
                                     {course.tags.map((tag, index) => (
                                         <span key={index} className="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs">
-                      {tag}
-                    </span>
+                                            {tag}
+                                        </span>
                                     ))}
                                 </div>
                             </div>
@@ -441,9 +442,12 @@ const CoursesList = () => {
                         </div>
 
                         <div className="mt-3 pt-3 border-t border-gray-100 flex justify-end">
-                            <button className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium">
+                            <Link
+                                to={`/courses/${course.id}`}
+                                className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm font-medium"
+                            >
                                 Подробнее о курсе
-                            </button>
+                            </Link>
                         </div>
                     </div>
                 ))}
