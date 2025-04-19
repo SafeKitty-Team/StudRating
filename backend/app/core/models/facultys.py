@@ -5,9 +5,9 @@ from .mixins.id_mixin import IDMixin
 from .mixins.timestamp_mixin import TimestampMixin
 
 
-class Department(IDMixin, TimestampMixin, Base):
+class Faculty(IDMixin, TimestampMixin, Base):
     """
-    Модель SQLAlchemy, представляющая кафедру.
+    Модель SQLAlchemy, представляющая факультет.
 
     Атрибуты:
         id (int): Уникальный идентификатор (наследуется от IDMixin).
@@ -20,11 +20,10 @@ class Department(IDMixin, TimestampMixin, Base):
 
     name: Mapped[str] = mapped_column(String(150), nullable=False, unique=True)
     description: Mapped[str] = mapped_column(String(500), nullable=True)
-    faculty_id: Mapped[int] = mapped_column(ForeignKey("faculties.id"), nullable=False)
 
 
     def __repr__(self) -> str:
         return (
-            f"<Department(id={self.id}, name='{self.name}', "
-            f"faculty_id={self.faculty_id}, created_at='{self.created_at}')>"
+            f"<Faculty(id={self.id}, name='{self.name}', "
+            f"created_at='{self.created_at}')>"
         )
