@@ -10,6 +10,7 @@ from utils import generate_postgres_db_url
 
 # Загрузка переменных окружения из файла .env, расположенного в директории backend
 backend_path = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(backend_path / ".env")
 
 
@@ -43,11 +44,19 @@ class DatabaseConfig(BaseModel):
     )
 
 
+class AuthJWT(BaseModel):
+    private_key_path: Path = BASE_DIR / "keys" / "jwt-private.pem"
+    public_key_path: Path = BASE_DIR / "keys" / "jwt-public.pem"
+    algorithm: str = "RS256"
+    access_token_expire_minutes: int = 30
+
+
 class Settings(BaseSettings):
     """Основной класс настроек приложения"""
 
     run: RunConfig = RunConfig()  # Конфигурация запуска приложения
     db: DatabaseConfig = DatabaseConfig()  # Конфигурация базы данных
+    auth_jwt: AuthJWT = AuthJWT()
 
 
 settings = Settings()
