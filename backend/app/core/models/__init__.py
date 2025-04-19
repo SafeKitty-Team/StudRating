@@ -6,6 +6,8 @@ __all__ = (
     "Faculty",
     "Program",
     "Subject",
+    "Professor",
+    "CourseProfessor",
 )
 
 from .db_helper import db_helper
@@ -15,3 +17,4 @@ from .reviews import Review
 from .faculties import Faculty
 from .programs import Program
 from .subjects import Subject
+from .professors import Professor, CourseProfessor
