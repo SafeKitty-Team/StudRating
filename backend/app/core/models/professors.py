@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlalchemy import Integer, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .base import Base
@@ -30,15 +32,13 @@ class Professor(IDMixin, Base):
 class CourseProfessor(IDMixin, Base):
     """
     Модель SQLAlchemy для связи между курсами и преподавателями.
-
-    Атрибуты:
-        id (int): Уникальный идентификатор (наследуется от IDMixin).
-        subject_id (int): Идентификатор курса (внешний ключ на таблицу Subject).
-        professor_id (int): Идентификатор преподавателя (внешний ключ на таблицу Professor).
     """
 
     subject_id: Mapped[int] = mapped_column(Integer, ForeignKey("subject.id"))
     professor_id: Mapped[int] = mapped_column(Integer, ForeignKey("professor.id"))
+
+    # Добавляем отношение к отзывам
+    reviews: Mapped[List["Review"]] = relationship("Review", back_populates="course_professor")
 
     def __repr__(self) -> str:
         return f"<CourseProfessor(id={self.id}, subject_id={self.subject_id}, professor_id={self.professor_id})>"

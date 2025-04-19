@@ -1,6 +1,15 @@
 from datetime import datetime
+from enum import Enum
 from typing import Optional
 from pydantic import BaseModel, Field
+
+
+class ReviewEntityType(str, Enum):
+    PROFESSOR = "professor"
+    SUBJECT = "subject"
+    PROGRAM = "program"
+    FACULTY = "faculty"
+    COURSE_PROFESSOR = "course_professor"
 
 
 class ReviewBase(BaseModel):
@@ -22,7 +31,9 @@ class ReviewBase(BaseModel):
 class ReviewCreate(ReviewBase):
     """Схема для создания нового отзыва"""
 
-    course_professor_id: int = Field(..., description="ID связи курс-преподаватель")
+    entity_type: ReviewEntityType
+    entity_id: int
+    course_professor_id: int | None = None  # для обратной совместимости
 
 
 class ReviewUpdate(BaseModel):
@@ -39,6 +50,7 @@ class ReviewRead(ReviewBase):
     """Схема для чтения отзыва"""
 
     id: int
-    course_professor_id: int
+    entity_type: ReviewEntityType
+    entity_id: int
     created_at: datetime
     is_on_moderation: bool

@@ -13,7 +13,7 @@ from .crud import (
     delete_review,
     get_reviews_by_course_professor,
     get_reviews_on_moderation,
-    approve_review
+    approve_review, get_reviews_by_entity
 )
 from .utils import contains_bad_words
 from api.auth.utils import get_current_user
@@ -92,7 +92,7 @@ async def read_reviews_by_course_professor(
         course_professor_id: int,
         db: AsyncSession = Depends(db_helper.session_getter),
 ):
-    """Получение всех отзывов для конкретной комбинации курс-преподаватель"""
+    """Получение всех отзывов для конкретной комбинации курс-преподаватель (для обратной совместимости)"""
     reviews = await get_reviews_by_course_professor(db, course_professor_id)
     return reviews
 
@@ -133,3 +133,13 @@ async def delete_existing_review(
     success = await delete_review(db, review_id)
     if not success:
         raise HTTPException(status_code=404, detail="Отзыв не найден")
+
+@router.get("/entity/{entity_type}/{entity_id}", response_model=List[ReviewRead])
+async def read_reviews_by_entity(
+        entity_type: SchemaReviewEntityType,
+        entity_id: int,
+        db: AsyncSession = Depends(db_helper.session_getter),
+):
+    """Получение всех отзывов для конкретной сущности"""
+    reviews = await get_reviews_by_entity(db, entity_type, entity_id)
+    return reviews
