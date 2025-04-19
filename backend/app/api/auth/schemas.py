@@ -15,4 +15,4 @@ class UserCreate(BaseModel):
 
 class CustomLoginForm(BaseModel):
     email: str
-    password: str
+    password: str #
