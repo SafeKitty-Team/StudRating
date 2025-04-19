@@ -1,8 +1,8 @@
 """add faculty table
 
-Revision ID: 13c07510388d
-Revises: b04f02df89e5
-Create Date: 2025-04-19 16:29:30.928037
+Revision ID: e82aa64f33d6
+Revises: 236b3f5e96fa
+Create Date: 2025-04-19 16:56:30.654368
 
 """
 
@@ -13,8 +13,8 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "13c07510388d"
-down_revision: Union[str, None] = "b04f02df89e5"
+revision: str = "e82aa64f33d6"
+down_revision: Union[str, None] = "236b3f5e96fa"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -31,6 +31,7 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id", name=op.f("pk_faculty")),
         sa.UniqueConstraint("name", name=op.f("uq_faculty_name")),
     )
+    op.drop_table("review")
     op.drop_table("user")
     # ### end Alembic commands ###
 
@@ -48,7 +49,13 @@ def downgrade() -> None:
             autoincrement=False,
             nullable=False,
         ),
-        sa.Column("id", sa.INTEGER(), autoincrement=True, nullable=False),
+        sa.Column(
+            "id",
+            sa.INTEGER(),
+            server_default=sa.text("nextval('user_id_seq'::regclass)"),
+            autoincrement=True,
+            nullable=False,
+        ),
         sa.Column(
             "created_at",
             postgresql.TIMESTAMP(),
@@ -58,6 +65,27 @@ def downgrade() -> None:
         ),
         sa.PrimaryKeyConstraint("id", name="pk_user"),
         sa.UniqueConstraint("email", name="uq_user_email"),
+        postgresql_ignore_search_path=False,
+    )
+    op.create_table(
+        "review",
+        sa.Column("user_id", sa.INTEGER(), autoincrement=False, nullable=True),
+        sa.Column("course_professor_id", sa.INTEGER(), autoincrement=False, nullable=False),
+        sa.Column("rating_overall", sa.INTEGER(), autoincrement=False, nullable=False),
+        sa.Column("rating_difficulty", sa.INTEGER(), autoincrement=False, nullable=False),
+        sa.Column("rating_usefulness", sa.INTEGER(), autoincrement=False, nullable=False),
+        sa.Column("text_review", sa.TEXT(), autoincrement=False, nullable=False),
+        sa.Column("is_on_moderation", sa.BOOLEAN(), autoincrement=False, nullable=False),
+        sa.Column("id", sa.INTEGER(), autoincrement=True, nullable=False),
+        sa.Column(
+            "created_at",
+            postgresql.TIMESTAMP(),
+            server_default=sa.text("now()"),
+            autoincrement=False,
+            nullable=False,
+        ),
+        sa.ForeignKeyConstraint(["user_id"], ["user.id"], name="fk_review_user_id_user"),
+        sa.PrimaryKeyConstraint("id", name="pk_review"),
     )
     op.drop_table("faculty")
     # ### end Alembic commands ###
