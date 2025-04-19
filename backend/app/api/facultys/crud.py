@@ -4,12 +4,14 @@ from sqlalchemy.future import select
 from sqlalchemy.exc import IntegrityError
 
 from .schemas import FacultyCreate, FacultyUpdate
-from core.models.facultys import Faculty
+from core.models.faculties import Faculty
 
-async def create_faculty(session: AsyncSession, faculty_create: FacultyCreate) -> Faculty:
+
+async def create_faculty(
+    session: AsyncSession, faculty_create: FacultyCreate
+) -> Faculty:
     new_faculty = Faculty(
-        name=faculty_create.name,
-        description=faculty_create.description
+        name=faculty_create.name, description=faculty_create.description
     )
 
     session.add(new_faculty)
@@ -45,21 +47,8 @@ async def update_faculty(
         faculty.name = faculty_update.name
     if faculty_update.description:
         faculty.description = faculty_update.description
-    if faculty_update.faculty_id:
-        faculty.faculty_id = faculty_update.faculty_id
 
     session.add(faculty)
     await session.commit()
     await session.refresh(faculty)
     return faculty
-
-
-async def delete_faculty(session: AsyncSession, faculty_id: int) -> None:
-    faculty = await get_faculty(session, faculty_id)
-    if not faculty:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Faculty not found"
-        )
-
-    await session.delete(faculty)
-    await session.commit()

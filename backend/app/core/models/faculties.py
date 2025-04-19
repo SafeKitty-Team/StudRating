@@ -21,7 +21,6 @@ class Faculty(IDMixin, TimestampMixin, Base):
     name: Mapped[str] = mapped_column(String(150), nullable=False, unique=True)
     description: Mapped[str] = mapped_column(String(500), nullable=True)
 
-
     def __repr__(self) -> str:
         return (
             f"<Faculty(id={self.id}, name='{self.name}', "

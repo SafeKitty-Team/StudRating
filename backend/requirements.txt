@@ -5,3 +5,4 @@ pydantic-settings==2.8.1
 sqlalchemy[asyncio]==2.0.40
 asyncpg==0.30.0
 alembic==1.15.2
+black==25.1.0
