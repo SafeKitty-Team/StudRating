@@ -1,4 +1,5 @@
 # [file name]: app/auth/router.py
+from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -51,7 +52,7 @@ async def register(
     return {"message": "User created successfully"}
 
 
-@router.get("/login", response_model=Token, include_in_schema=True)
+@router.post("/login", response_model=Token)
 async def login(
         form_data: CustomLoginForm = Depends(),
         session: AsyncSession = Depends(db_helper.session_getter),
@@ -71,5 +72,3 @@ async def login(
 @router.post("/logout")
 async def logout():
     return {"message": "Successfully logged out"}
-
-

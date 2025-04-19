@@ -1,8 +1,9 @@
-from typing import List, Optional
+from typing import List, Optional, Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models.db_helper import db_helper
+from core.models.users import User
 from .schemas import ReviewCreate, ReviewRead, ReviewUpdate
 from .crud import (
     create_review,
@@ -15,6 +16,8 @@ from .crud import (
     approve_review
 )
 from .utils import contains_bad_words
+from api.auth.utils import get_current_user
+from api.auth.dependencies import get_current_admin_user
 
 router = APIRouter(prefix="/reviews", tags=["reviews"])
 
@@ -23,6 +26,7 @@ router = APIRouter(prefix="/reviews", tags=["reviews"])
 async def create_new_review(
         review_data: ReviewCreate,
         db: AsyncSession = Depends(db_helper.session_getter),
+        current_user: User = Depends(get_current_user),
 ):
     """Создание нового отзыва с проверкой на запрещенные слова"""
     # Конвертируем в словарь
@@ -32,7 +36,25 @@ async def create_new_review(
     needs_moderation = contains_bad_words(review_dict["text_review"])
     review_dict["is_on_moderation"] = needs_moderation
 
-    # Создаем отзыв (всегда анонимно, без user_id)
+    # Создаем отзыв, привязав его к текущему пользователю
+    review = await create_review(db, review_dict, user_id=current_user.id)
+    return review
+
+
+@router.post("/anonymous/", response_model=ReviewRead, status_code=status.HTTP_201_CREATED)
+async def create_anonymous_review(
+        review_data: ReviewCreate,
+        db: AsyncSession = Depends(db_helper.session_getter),
+):
+    """Создание анонимного отзыва с проверкой на запрещенные слова"""
+    # Конвертируем в словарь
+    review_dict = review_data.model_dump()
+
+    # Проверяем наличие запрещенных слов
+    needs_moderation = contains_bad_words(review_dict["text_review"])
+    review_dict["is_on_moderation"] = needs_moderation
+
+    # Создаем отзыв без привязки к пользователю
     review = await create_review(db, review_dict)
     return review
 
@@ -75,12 +97,13 @@ async def read_reviews_by_course_professor(
     return reviews
 
 
-# Административные маршруты (в реальном приложении требуют аутентификации/авторизации)
+# Административные маршруты (требуют прав администратора)
 @router.get("/admin/moderation", response_model=List[ReviewRead])
 async def read_reviews_on_moderation(
         skip: int = 0,
         limit: int = 100,
         db: AsyncSession = Depends(db_helper.session_getter),
+        admin_user: User = Depends(get_current_admin_user),
 ):
     """Получение отзывов, ожидающих модерации (только для администраторов)"""
     reviews = await get_reviews_on_moderation(db, skip=skip, limit=limit)
@@ -91,6 +114,7 @@ async def read_reviews_on_moderation(
 async def approve_review_after_moderation(
         review_id: int,
         db: AsyncSession = Depends(db_helper.session_getter),
+        admin_user: User = Depends(get_current_admin_user),
 ):
     """Одобрение отзыва после модерации (только для администраторов)"""
     review = await approve_review(db, review_id)
@@ -103,6 +127,7 @@ async def approve_review_after_moderation(
 async def delete_existing_review(
         review_id: int,
         db: AsyncSession = Depends(db_helper.session_getter),
+        admin_user: User = Depends(get_current_admin_user),
 ):
     """Удаление отзыва (только для администраторов)"""
     success = await delete_review(db, review_id)
