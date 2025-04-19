@@ -7,6 +7,7 @@ from core.config import settings
 from api import router as api_router
 from api.auth.router import router as auth_rout
 
+
 @asynccontextmanager
 async def lifespan(lifespan_app: FastAPI):
     # Код, выполняемый перед запуском приложения
