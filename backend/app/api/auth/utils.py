@@ -15,7 +15,8 @@ from .crud import get_user_by_email
 from core.models.users import User
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+# Нужно указать полный путь (включая префикс /auth)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 def create_access_token(data: dict) -> str:
@@ -23,9 +24,8 @@ def create_access_token(data: dict) -> str:
     expire = datetime.utcnow() + timedelta(minutes=settings.auth_jwt.access_token_expire_minutes)
     to_encode.update({"exp": expire})
 
-    with open(settings.auth_jwt.private_key_path, "rb") as key_file:  # Обратите внимание на 'rb'
-        private_key = key_file.read().decode('utf-8')  # Декодируем байты в строку
-        # print(private_key)
+    with open(settings.auth_jwt.private_key_path, "rb") as key_file:
+        private_key = key_file.read().decode('utf-8')
 
     if "-----BEGIN" not in private_key:
         raise ValueError("Invalid private key format")

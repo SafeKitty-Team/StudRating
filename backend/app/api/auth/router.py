@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.models import db_helper
-from .schemas import Token, UserCreate, CustomLoginForm
+from .schemas import Token, UserCreate
 from .utils import (
     create_access_token,
     get_current_user,
@@ -54,10 +54,12 @@ async def register(
 
 @router.post("/login", response_model=Token)
 async def login(
-        form_data: CustomLoginForm = Depends(),
+        # Используем стандартную OAuth2 форму вместо CustomLoginForm
+        form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
         session: AsyncSession = Depends(db_helper.session_getter),
 ):
-    user = await authenticate_user(form_data.email, form_data.password, session)
+    # Используем username как email в соответствии с OAuth2 стандартом
+    user = await authenticate_user(form_data.username, form_data.password, session)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

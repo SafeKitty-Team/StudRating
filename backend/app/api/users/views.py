@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, List, Callable
 
 from fastapi import APIRouter, Depends, status, Form, HTTPException
 from pydantic import EmailStr
@@ -8,9 +8,15 @@ from .schemas import UserCreate, UserRead, UserUpdate
 from core.models.users import User
 from .crud import create_user, get_user, update_user, delete_user
 from core.models import db_helper
+from api.auth.dependencies import get_current_admin_user
 
 
-router = APIRouter(prefix="/users", tags=["users"])
+# Create a router with admin dependency applied to all routes
+router = APIRouter(
+    prefix="/users",
+    tags=["users"],
+    dependencies=[Depends(get_current_admin_user)]  # Apply admin check to all routes
+)
 
 
 @router.post("/", response_model=UserRead, status_code=status.HTTP_201_CREATED)
