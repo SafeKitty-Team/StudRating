@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 
 from core.models import db_helper
 from core.config import settings
-
+from api.auth.router import router as rout
 
 @asynccontextmanager
 async def lifespan(lifespan_app: FastAPI):
@@ -15,6 +15,7 @@ async def lifespan(lifespan_app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+app.include_router(rout)
 
 
 if __name__ == "__main__":

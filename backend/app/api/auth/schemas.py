@@ -10,4 +10,4 @@ class TokenData(BaseModel):
 
 class UserCreate(BaseModel):
     email: EmailStr
-    password: str
+    password: str   
