@@ -1,10 +1,11 @@
 from typing import List
 
+
 from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from .base import Base
 from .mixins.id_mixin import IDMixin
-from .mixins.timestamp_mixin import TimestampMixin
 
 
 class Faculty(IDMixin, Base):

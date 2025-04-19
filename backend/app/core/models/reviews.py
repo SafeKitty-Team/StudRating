@@ -1,12 +1,12 @@
 from sqlalchemy import Integer, Text, ForeignKey, Boolean
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
 from .mixins.id_mixin import IDMixin
 from .mixins.timestamp_mixin import TimestampMixin
 
 
-class Review(IDMixin, TimestampMixin, Base):
+class Review(IDMixin, Base):
     """
     Модель SQLAlchemy, представляющая отзыв пользователя о курсе и преподавателе.
 
@@ -22,14 +22,23 @@ class Review(IDMixin, TimestampMixin, Base):
         is_on_moderation (bool): Требуется ли модерация перед публикацией.
     """
 
-    user_id: Mapped[int | None] = mapped_column(Integer, ForeignKey("user.id"), nullable=True)
-    course_professor_id: Mapped[int] = mapped_column(Integer,
-                                                     nullable=False)  # Будет ForeignKey когда реализуем CourseProfessor
+    user_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("user.id"), nullable=True
+    )
+    course_professor_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("course_professor.id"), nullable=False
+    )
     rating_overall: Mapped[int] = mapped_column(Integer, nullable=False)
     rating_difficulty: Mapped[int] = mapped_column(Integer, nullable=False)
     rating_usefulness: Mapped[int] = mapped_column(Integer, nullable=False)
     text_review: Mapped[str] = mapped_column(Text, nullable=False)
-    is_on_moderation: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    is_on_moderation: Mapped[bool] = mapped_column(
+        Boolean, default=False, nullable=False
+    )
+
+    course_professor: Mapped["CourseProfessor"] = relationship(
+        "CourseProfessor", back_populates="reviews"
+    )
 
     def __repr__(self) -> str:
         return (

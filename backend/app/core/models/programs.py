@@ -25,4 +25,7 @@ class Program(IDMixin, Base):
     faculty: Mapped[Faculty] = relationship("Faculty", back_populates="program")
 
     def __repr__(self):
-        return f"<Program(id={self.id}, name={self.name}>"
+        return (
+            f"<Program(id={self.id}, name={self.name}, degree_level={self.degree_level},"
+            f" faculty_id={self.faculty_id}, faculty={self.faculty})>"
+        )
