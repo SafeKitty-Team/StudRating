@@ -7,16 +7,16 @@ from .mixins.id_mixin import IDMixin
 
 
 class DegreeLevel(enum.Enum):
-    specialist = "Specialist"
-    bachelor = "Bachelor"
-    master = "Master"
-    phd = "PhD"
+    specialist = "specialist"
+    bachelor = "bachelor"
+    master = "master"
+    phd = "phd"
 
 
 class Program(IDMixin, Base):
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     degree_level: Mapped[DegreeLevel] = mapped_column(
-        Enum(DegreeLevel, name="program_level"),
+        Enum(DegreeLevel, name="program_level", native_enum=False),
         default=DegreeLevel.bachelor,
         nullable=False,
     )
