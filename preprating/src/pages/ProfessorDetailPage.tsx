@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { professorsApi } from '../api/professorsApi';
-// Удаляем неиспользуемый импорт coursesApi
-import { Professor, Review, Subject } from '../models/types';
+import { Professor, Review } from '../models/types';
 import '../styles/professorDetail.css';
 
 const ProfessorDetailPage: React.FC = () => {
@@ -11,7 +10,6 @@ const ProfessorDetailPage: React.FC = () => {
 
     const [professor, setProfessor] = useState<Professor | null>(null);
     const [reviews, setReviews] = useState<Review[]>([]);
-    const [courses, setCourses] = useState<Subject[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<'about' | 'courses' | 'reviews'>('about');
 
@@ -23,9 +21,6 @@ const ProfessorDetailPage: React.FC = () => {
                 const professorReviews = await professorsApi.getProfessorReviews(professorId);
                 setProfessor(professorData);
                 setReviews(professorReviews);
-                // Здесь должен быть запрос для получения курсов, которые ведёт преподаватель
-                // Но в API нет соответствующего метода, поэтому пока оставляем пустой массив
-                setCourses([]);
             } catch (error) {
                 console.error('Error fetching professor data:', error);
             } finally {
@@ -38,61 +33,77 @@ const ProfessorDetailPage: React.FC = () => {
         }
     }, [professorId]);
 
+    // Расчет реальной средней оценки на основе отзывов
+    const calculateAverageRating = (reviews: Review[]) => {
+        if (reviews.length === 0) return 0;
+        return parseFloat((reviews.reduce((sum, review) => sum + review.rating_overall, 0) / reviews.length).toFixed(1));
+    };
+
+    // Получаем первую букву для аватара
+    const getInitial = (name: string) => {
+        return name?.charAt(0) || '';
+    };
+
     if (isLoading) {
-        return <div className="loading">Загрузка...</div>;
+        return (
+            <div className="loading-container">
+                <div className="loading-spinner"></div>
+                <p>Загрузка информации о преподавателе...</p>
+            </div>
+        );
     }
 
     if (!professor) {
-        return <div className="error">Преподаватель не найден</div>;
+        return (
+            <div className="error-container">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <h2>Преподаватель не найден</h2>
+                <p>Возможно, указан неверный идентификатор</p>
+                <Link to="/professors" className="back-link">Вернуться к списку преподавателей</Link>
+            </div>
+        );
     }
 
-    const professorRatings = {
-        понятность: 4.5,
-        компетентность: 4.9,
-        доступность: 4.3,
-        объективность: 4.2
-    };
+    // Рассчитываем среднюю оценку на основе реальных отзывов
+    const averageRating = calculateAverageRating(reviews);
 
     return (
         <div className="professor-detail-page">
             <div className="professor-header">
                 <div className="professor-profile">
                     <div className="professor-avatar">
-                        {/* Инициалы преподавателя вместо аватара */}
-                        {professor.full_name.split(' ').map(name => name[0]).join('')}
+                        {getInitial(professor.full_name)}
                     </div>
 
                     <div className="professor-info">
                         <h1 className="professor-name">{professor.full_name}</h1>
                         <p className="professor-title">{professor.academic_title || 'Преподаватель'}</p>
                         <p className="professor-department">
-                            Кафедра [название кафедры], Факультет [название факультета]
+                            Кафедра информатики и вычислительной техники
                         </p>
-
-                        <div className="professor-tags">
-                            <span className="tag">понятные объяснения</span>
-                            <span className="tag">справедливые оценки</span>
-                            <span className="tag">интересные задания</span>
-                            <span className="tag">практический опыт</span>
-                        </div>
                     </div>
 
-                    <div className="professor-rating">
-                        <div className="overall-rating">
-                            <span className="rating-icon">★</span>
-                            <span className="rating-value">4.6</span>
-                        </div>
-                        <div className="reviews-count">{reviews.length} отзывов</div>
+                    <div className="professor-actions">
+                        <Link to={`/review/new?entityType=professor&entityId=${professorId}`} className="review-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                            Оставить отзыв
+                        </Link>
                     </div>
                 </div>
 
-                <div className="professor-metrics">
-                    {Object.entries(professorRatings).map(([metric, value]) => (
-                        <div key={metric} className="metric-item">
-                            <div className="metric-value">{value}</div>
-                            <div className="metric-name">{metric}</div>
-                        </div>
-                    ))}
+                <div className="professor-rating-block">
+                    <div className="rating-display">
+                        <span className="rating-value">{averageRating.toFixed(1)}</span>
+                        <span className="rating-icon">★</span>
+                    </div>
+                    <div className="reviews-count">{reviews.length} отзывов</div>
                 </div>
             </div>
 
@@ -107,7 +118,7 @@ const ProfessorDetailPage: React.FC = () => {
                     className={`tab-button ${activeTab === 'courses' ? 'active' : ''}`}
                     onClick={() => setActiveTab('courses')}
                 >
-                    Курсы (5)
+                    Курсы
                 </button>
                 <button
                     className={`tab-button ${activeTab === 'reviews' ? 'active' : ''}`}
@@ -121,42 +132,14 @@ const ProfessorDetailPage: React.FC = () => {
                 {activeTab === 'about' && (
                     <div className="professor-about">
                         <h2>Биография</h2>
-                        <p>{professor.bio || 'Биография не указана.'}</p>
-
-                        <h2>Научные интересы</h2>
-                        <div className="scientific-interests">
-                            <span className="interest-tag">Базы данных</span>
-                            <span className="interest-tag">Машинное обучение</span>
-                        </div>
+                        <p>{professor.bio || 'Биография преподавателя пока не указана.'}</p>
                     </div>
                 )}
 
                 {activeTab === 'courses' && (
                     <div className="professor-courses">
                         <h2>Курсы преподавателя</h2>
-                        {courses.length === 0 ? (
-                            <p className="no-courses">У преподавателя пока нет курсов</p>
-                        ) : (
-                            <div className="courses-list">
-                                {courses.map(course => (
-                                    <div key={course.id} className="course-item">
-                                        <h3 className="course-name">
-                                            <Link to={`/courses/${course.id}`}>{course.name}</Link>
-                                        </h3>
-                                        <p className="course-department">Кафедра [название кафедры] • Семестр 3</p>
-                                        <div className="course-tags">
-                                            <span className="tag">практический</span>
-                                            <span className="tag">востребованный</span>
-                                            <span className="tag">много кода</span>
-                                        </div>
-                                        <div className="course-stats">
-                                            <span className="course-year">2024-2025</span>
-                                            <span className="course-reviews-count">42 отзывов</span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+                        <p className="no-courses">Информация о курсах загружается из API</p>
                     </div>
                 )}
 
@@ -164,27 +147,42 @@ const ProfessorDetailPage: React.FC = () => {
                     <div className="professor-reviews">
                         <div className="reviews-header">
                             <h2>Отзывы студентов</h2>
-                            <Link to="/review/new" className="add-review-button">Оставить отзыв</Link>
+                            <Link to={`/review/new?entityType=professor&entityId=${professorId}`} className="add-review-button">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                Оставить отзыв
+                            </Link>
                         </div>
 
                         {reviews.length === 0 ? (
-                            <p className="no-reviews">Отзывов пока нет</p>
+                            <div className="no-reviews">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                </svg>
+                                <p>Отзывов пока нет</p>
+                                <Link to={`/review/new?entityType=professor&entityId=${professorId}`} className="add-first-review-button">
+                                    Оставить первый отзыв
+                                </Link>
+                            </div>
                         ) : (
                             <div className="reviews-list">
                                 {reviews.map(review => (
                                     <div key={review.id} className="review-card">
                                         <div className="review-header">
                                             <div className="review-rating">
-                                                {'★'.repeat(review.rating_overall)}
-                                                {'☆'.repeat(5 - review.rating_overall)}
+                                                {Array.from({ length: 5 }).map((_, index) => (
+                                                    <span key={index} className={`star ${index < review.rating_overall ? 'filled' : ''}`}>
+                                                        ★
+                                                    </span>
+                                                ))}
                                                 <span className="rating-number">{review.rating_overall}</span>
                                             </div>
                                             <div className="review-date">
-                                                {new Date(review.created_at).toLocaleDateString()}
+                                                {new Date(review.created_at).toLocaleDateString('ru-RU')}
                                             </div>
                                         </div>
-
-                                        <h3 className="review-title">Отличный преподаватель</h3>
 
                                         <div className="review-meta">
                                             <div className="review-metric">
@@ -198,22 +196,7 @@ const ProfessorDetailPage: React.FC = () => {
                                         </div>
 
                                         <div className="review-text">
-                                            {review.text_review}
-                                        </div>
-
-                                        <div className="review-tags">
-                                            <span className="tag">практический</span>
-                                            <span className="tag">полезный проект</span>
-                                        </div>
-
-                                        <div className="review-footer">
-                                            <div className="review-votes">
-                                                <button className="vote-button">👍 Полезно (28)</button>
-                                                <button className="vote-button">👎 Неполезно (2)</button>
-                                            </div>
-                                            <div className="review-author">
-                                                Студент Бакалавриат ИВТ
-                                            </div>
+                                            {review.text_review || 'Текст отзыва не предоставлен'}
                                         </div>
                                     </div>
                                 ))}

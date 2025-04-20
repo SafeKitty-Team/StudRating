@@ -1,28 +1,29 @@
+/* Enhanced Header Styling */
 .header {
     background-color: var(--primary-color);
     color: white;
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: var(--shadow);
+    box-shadow: var(--shadow-md);
     height: var(--header-height);
     transition: all var(--transition);
 }
 
 .header-scrolled {
-    background-color: rgba(var(--primary-color-rgb, 79, 70, 229), 0.95);
-    backdrop-filter: blur(5px);
-    box-shadow: var(--shadow-md);
+    background-color: rgba(79, 70, 229, 0.95);
+    backdrop-filter: blur(8px);
+    box-shadow: var(--shadow-lg);
 }
 
 .header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 var(--container-padding);
-    height: 100%;
 }
 
 .logo {
@@ -43,34 +44,30 @@
 .logo-icon {
     margin-right: 0.5rem;
     font-size: 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .search-form {
     position: relative;
     width: 100%;
     max-width: 500px;
-    margin: 0 1rem;
+    margin: 0 1.5rem;
 }
 
 .search-input {
     width: 100%;
-    padding: 0.75rem 1rem 0.75rem 1rem;
-    padding-right: 2.5rem;
+    padding: 0.65rem 1rem 0.65rem 2.5rem;
     border-radius: var(--border-radius-pill);
     border: none;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.15);
     color: white;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     transition: all var(--transition-fast);
 }
 
 .search-input:focus {
     outline: none;
-    background-color: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
 }
 
 .search-input::placeholder {
@@ -79,7 +76,7 @@
 
 .search-button {
     position: absolute;
-    right: 0.75rem;
+    left: 0.75rem;
     top: 50%;
     transform: translateY(-50%);
     background: none;
@@ -108,14 +105,14 @@
     color: white;
     text-decoration: none;
     font-weight: 500;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     padding: 0.5rem 0;
     position: relative;
     display: flex;
     align-items: center;
     gap: 0.5rem;
     opacity: 0.85;
-    transition: opacity var(--transition-fast);
+    transition: all var(--transition-fast);
 }
 
 .nav-link:hover {
@@ -139,13 +136,13 @@
 }
 
 .nav-admin {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.15);
     padding: 0.5rem 0.75rem;
     border-radius: var(--border-radius-pill);
 }
 
 .nav-admin:hover {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.25);
 }
 
 .header-actions {
@@ -155,22 +152,25 @@
 }
 
 .theme-toggle {
-    background: none;
+    background: rgba(255, 255, 255, 0.1);
     border: none;
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.5rem;
+    width: 36px;
+    height: 36px;
+    padding: 0;
     cursor: pointer;
-    opacity: 0.8;
-    transition: opacity var(--transition-fast), transform var(--transition-fast);
+    opacity: 0.9;
+    transition: all var(--transition-fast);
     border-radius: 50%;
 }
 
 .theme-toggle:hover {
     opacity: 1;
     transform: rotate(15deg);
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .auth-buttons {
@@ -181,16 +181,17 @@
 .login-button {
     background-color: white;
     color: var(--primary-color);
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 1.25rem;
     border-radius: var(--border-radius-pill);
     font-weight: 500;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     border: none;
     cursor: pointer;
     transition: all var(--transition);
     text-decoration: none;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
 }
 
@@ -198,7 +199,7 @@
     background-color: rgba(255, 255, 255, 0.9);
     color: var(--primary-dark);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
 }
 
 .user-menu {
@@ -216,8 +217,8 @@
 }
 
 .user-avatar {
-    width: 2rem;
-    height: 2rem;
+    width: 2.25rem;
+    height: 2.25rem;
     border-radius: 50%;
     background-color: white;
     color: var(--primary-color);
@@ -226,21 +227,22 @@
     justify-content: center;
     font-weight: 600;
     transition: all var(--transition);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .user-button:hover .user-avatar {
     transform: scale(1.05);
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 
 .user-dropdown {
     position: absolute;
-    top: calc(100% + 0.5rem);
+    top: calc(100% + 0.75rem);
     right: 0;
     min-width: 200px;
     background-color: var(--white);
     border-radius: var(--border-radius);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-lg);
     overflow: hidden;
     z-index: 10;
     opacity: 0;
@@ -260,8 +262,8 @@
     padding: 0.75rem 1rem;
     color: var(--text-color);
     text-decoration: none;
-    font-size: 0.875rem;
-    transition: background-color var(--transition-fast);
+    font-size: 0.9rem;
+    transition: all var(--transition-fast);
     border: none;
     width: 100%;
     text-align: left;
@@ -271,6 +273,7 @@
 
 .dropdown-item:hover {
     background-color: rgba(0, 0, 0, 0.05);
+    padding-left: 1.25rem;
 }
 
 .logout-button {
@@ -286,6 +289,7 @@
     height: 24px;
     position: relative;
     cursor: pointer;
+    margin-left: 0.5rem;
 }
 
 .menu-icon,
@@ -313,13 +317,28 @@
     bottom: -8px;
 }
 
-@media (max-width: 991px) {
+@media (max-width: 1100px) {
     .header-container {
         padding: 0 1rem;
     }
 
     .search-form {
-        max-width: 300px;
+        max-width: 250px;
+        margin: 0 1rem;
+    }
+
+    .main-nav {
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 920px) {
+    .search-form {
+        max-width: 200px;
+    }
+
+    .nav-link {
+        font-size: 0.85rem;
     }
 }
 
@@ -363,5 +382,30 @@
 
     .nav-link:last-child {
         border-bottom: none;
+    }
+
+    .theme-toggle {
+        margin-right: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .theme-toggle {
+        width: 32px;
+        height: 32px;
+    }
+
+    .user-avatar {
+        width: 2rem;
+        height: 2rem;
+    }
+
+    .logo-text {
+        font-size: 1.1rem;
     }
 }

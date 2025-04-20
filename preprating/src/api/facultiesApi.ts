@@ -1,20 +1,24 @@
 import apiClient from './apiClient';
-import { Faculty, Program } from '../models/types';
+import { Faculty } from '../models/types';
 
 export const facultiesApi = {
-    getAllFaculties: async () => {
-        const response = await apiClient.get('/faculties/');
-        return response.data as Faculty[];
+    getAllFaculties: async (): Promise<Faculty[]> => {
+        try {
+            const response = await apiClient.get<Faculty[]>('/faculties/');
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching faculties:', error);
+            throw error;
+        }
     },
 
-    getFacultyById: async (facultyId: number) => {
-        const response = await apiClient.get(`/faculties/${facultyId}`);
-        return response.data as Faculty;
+    getFacultyById: async (facultyId: number): Promise<Faculty> => {
+        try {
+            const response = await apiClient.get<Faculty>(`/faculties/${facultyId}`);
+            return response.data;
+        } catch (error) {
+            console.error(`Error fetching faculty #${facultyId}:`, error);
+            throw error;
+        }
     },
-
-    getFacultyPrograms: async (facultyId: number) => {
-        // API не предоставляет конкретный эндпоинт для этого, но можно получить все программы и отфильтровать
-        const response = await apiClient.get(`/programs/?faculty_id=${facultyId}`);
-        return response.data as Program[];
-    }
 };

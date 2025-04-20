@@ -1,10 +1,10 @@
-from typing import Annotated
+from typing import Annotated, List
 
 from fastapi import APIRouter, Depends, status, Form, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .schemas import FacultyCreate, FacultyRead, FacultyUpdate
-from .crud import create_faculty, get_faculty, update_faculty
+from .crud import create_faculty, get_faculty, update_faculty, get_all_faculties
 from core.models import db_helper, Faculty
 from api.auth.dependencies import get_current_admin_user
 from core.models.users import User
@@ -53,3 +53,13 @@ async def update_faculty_endpoint(
     return await update_faculty(
         session=session, faculty_id=faculty_id, faculty_update=faculty_update
     )
+
+
+@router.get("/", response_model=List[FacultyRead])
+async def list_faculties(
+    session: Annotated[AsyncSession, Depends(db_helper.session_getter)],
+) -> list[Faculty]:
+    """
+    Получение списка всех факультетов (доступно всем пользователям).
+    """
+    return await get_all_faculties(session)
