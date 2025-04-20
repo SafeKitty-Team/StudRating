@@ -16,7 +16,7 @@ from .crud import (
     get_reviews_on_moderation,
     approve_review,
     get_reviews_by_entity,
-    get_average_ratings_by_entity
+    get_average_ratings_by_entity,
 )
 from .schemas import ReviewCreate, ReviewRead, ReviewEntityType, AverageRatings
 from .utils import contains_bad_words
@@ -24,34 +24,32 @@ from .utils import contains_bad_words
 router = APIRouter(prefix="/reviews", tags=["reviews"])
 
 
-@router.post("/", response_model=ReviewRead, status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_new_review(
-        review_data: ReviewCreate,
-        db: AsyncSession = Depends(db_helper.session_getter),
-        current_user: User = Depends(get_current_user),
+    review_data: ReviewCreate,
+    db: AsyncSession = Depends(db_helper.session_getter),
+    current_user: User = Depends(get_current_user),
 ):
     """Создание нового отзыва с проверкой на запрещенные слова"""
-    # Конвертируем в словарь
     review_dict = review_data.model_dump()
 
-    # Проверяем наличие запрещенных слов
-    needs_moderation = contains_bad_words(review_dict["text_review"])
-    review_dict["is_on_moderation"] = needs_moderation
+    # Проверка текста на запрещённые слова
+    review_dict["is_on_moderation"] = contains_bad_words(review_dict["text_review"])
 
     # Проверка значения course_professor_id
     if review_dict.get("course_professor_id", 0) == 0:
-        # Если равно 0, то удаляем его из словаря
         review_dict.pop("course_professor_id", None)
 
-    # Создаем отзыв, привязав его к текущему пользователю
     review = await create_review(db, review_dict, user_id=current_user.id)
     return review
 
 
-@router.post("/anonymous/", response_model=ReviewRead, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/anonymous/", response_model=ReviewRead, status_code=status.HTTP_201_CREATED
+)
 async def create_anonymous_review(
-        review_data: ReviewCreate,
-        db: AsyncSession = Depends(db_helper.session_getter),
+    review_data: ReviewCreate,
+    db: AsyncSession = Depends(db_helper.session_getter),
 ):
     """Создание анонимного отзыва с проверкой на запрещенные слова"""
     # Конвертируем в словарь
@@ -73,9 +71,9 @@ async def create_anonymous_review(
 
 @router.get("/", response_model=List[ReviewRead])
 async def read_reviews(
-        skip: int = 0,
-        limit: int = 100,
-        db: AsyncSession = Depends(db_helper.session_getter),
+    skip: int = 0,
+    limit: int = 100,
+    db: AsyncSession = Depends(db_helper.session_getter),
 ):
     """Получение всех опубликованных отзывов"""
     reviews = await get_reviews(db, skip=skip, limit=limit, include_moderated=False)
@@ -84,8 +82,8 @@ async def read_reviews(
 
 @router.get("/{review_id}", response_model=ReviewRead)
 async def read_review(
-        review_id: int,
-        db: AsyncSession = Depends(db_helper.session_getter),
+    review_id: int,
+    db: AsyncSession = Depends(db_helper.session_getter),
 ):
     """Получение конкретного отзыва по ID"""
     review = await get_review(db, review_id)
@@ -101,8 +99,8 @@ async def read_review(
 
 @router.get("/course-professor/{course_professor_id}", response_model=List[ReviewRead])
 async def read_reviews_by_course_professor(
-        course_professor_id: int,
-        db: AsyncSession = Depends(db_helper.session_getter),
+    course_professor_id: int,
+    db: AsyncSession = Depends(db_helper.session_getter),
 ):
     """Получение всех отзывов для конкретной комбинации курс-преподаватель (для обратной совместимости)"""
     reviews = await get_reviews_by_course_professor(db, course_professor_id)
@@ -111,10 +109,12 @@ async def read_reviews_by_course_professor(
 
 @router.get("/stats/{entity_type}/{entity_id}", response_model=AverageRatings)
 async def get_entity_ratings_stats(
-        entity_type: ReviewEntityType,
-        entity_id: int,
-        include_moderated: bool = Query(False, description="Включать ли отзывы на модерации"),
-        db: AsyncSession = Depends(db_helper.session_getter),
+    entity_type: ReviewEntityType,
+    entity_id: int,
+    include_moderated: bool = Query(
+        False, description="Включать ли отзывы на модерации"
+    ),
+    db: AsyncSession = Depends(db_helper.session_getter),
 ):
     """
     Получение средних оценок для указанной сущности
@@ -128,28 +128,30 @@ async def get_entity_ratings_stats(
     Returns:
         Объект со средними оценками и количеством отзывов
     """
-    stats = await get_average_ratings_by_entity(db, entity_type, entity_id, include_moderated)
+    stats = await get_average_ratings_by_entity(
+        db, entity_type, entity_id, include_moderated
+    )
     return stats
 
 
 # Административные маршруты (требуют прав администратора)
 @router.get("/admin/moderation", response_model=List[ReviewRead])
 async def read_reviews_on_moderation(
-        skip: int = 0,
-        limit: int = 100,
-        db: AsyncSession = Depends(db_helper.session_getter),
-        admin_user: User = Depends(get_current_admin_user),
+    skip: int = 0,
+    limit: int = 100,
+    db: AsyncSession = Depends(db_helper.session_getter),
+    admin_user: User = Depends(get_current_admin_user),
 ):
     """Получение отзывов, ожидающих модерации (только для администраторов)"""
     reviews = await get_reviews_on_moderation(db, skip=skip, limit=limit)
     return reviews
 
 
-@router.post("/admin/approve/{review_id}", response_model=ReviewRead)
+@router.post("/admin/approve/{review_id}")
 async def approve_review_after_moderation(
-        review_id: int,
-        db: AsyncSession = Depends(db_helper.session_getter),
-        admin_user: User = Depends(get_current_admin_user),
+    review_id: int,
+    db: AsyncSession = Depends(db_helper.session_getter),
+    admin_user: User = Depends(get_current_admin_user),
 ):
     """Одобрение отзыва после модерации (только для администраторов)"""
     review = await approve_review(db, review_id)
@@ -160,9 +162,9 @@ async def approve_review_after_moderation(
 
 @router.delete("/{review_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_existing_review(
-        review_id: int,
-        db: AsyncSession = Depends(db_helper.session_getter),
-        admin_user: User = Depends(get_current_admin_user),
+    review_id: int,
+    db: AsyncSession = Depends(db_helper.session_getter),
+    admin_user: User = Depends(get_current_admin_user),
 ):
     """Удаление отзыва (только для администраторов)"""
     success = await delete_review(db, review_id)
@@ -172,9 +174,9 @@ async def delete_existing_review(
 
 @router.get("/entity/{entity_type}/{entity_id}", response_model=List[ReviewRead])
 async def read_reviews_by_entity(
-        entity_type: ReviewEntityType,
-        entity_id: int,
-        db: AsyncSession = Depends(db_helper.session_getter),
+    entity_type: ReviewEntityType,
+    entity_id: int,
+    db: AsyncSession = Depends(db_helper.session_getter),
 ):
     """Получение всех отзывов для конкретной сущности"""
     reviews = await get_reviews_by_entity(db, entity_type, entity_id)
