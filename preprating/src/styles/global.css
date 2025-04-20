@@ -1,9 +1,13 @@
 :root {
     /* Основные цвета */
     --primary-color: #4f46e5;
+    --primary-color-rgb: 79, 70, 229;
     --primary-dark: #4338ca;
+    --primary-dark-rgb: 67, 56, 202;
     --primary-light: #818cf8;
+    --primary-light-rgb: 129, 140, 248;
     --secondary-color: #e9e7fd;
+    --secondary-color-rgb: 233, 231, 253;
 
     /* Нейтральные цвета */
     --text-color: #1f2937;
