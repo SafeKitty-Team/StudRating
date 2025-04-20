@@ -12,7 +12,4 @@ class UserCreate(BaseModel):
     email: EmailStr
     password: str
 
-
-class CustomLoginForm(BaseModel):
-    email: str
-    password: str
+# Удалена CustomLoginтForm, так как используется стандартная OAuth2PasswordRequestForm
