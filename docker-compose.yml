@@ -9,7 +9,6 @@ services:
       - ./backend:/app
     env_file:
       - ./backend/.env
-    command: python content-hub/main.py
     depends_on:
       - postgres_db
 
