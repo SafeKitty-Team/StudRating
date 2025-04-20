@@ -1,0 +1,120 @@
+.header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 12px 0;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.logo-icon {
+    margin-right: 8px;
+    font-size: 28px;
+}
+
+.search-form {
+    flex: 1;
+    max-width: 500px;
+    position: relative;
+    margin: 0 20px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 16px;
+    border-radius: 24px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 16px;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.search-input:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.search-button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+}
+
+.main-nav {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s ease;
+}
+
+.nav-link:hover {
+    opacity: 0.8;
+    color: white;
+}
+
+.auth-buttons {
+    margin-left: 20px;
+}
+
+.login-button, .logout-button {
+    background-color: white;
+    color: var(--primary-color);
+    padding: 8px 16px;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    text-decoration: none;
+}
+
+.login-button:hover, .logout-button:hover {
+    background-color: #f0f0f0;
+    color: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+    .header-container {
+        flex-wrap: wrap;
+    }
+
+    .search-form {
+        order: 3;
+        width: 100%;
+        max-width: none;
+        margin: 10px 0 0;
+    }
+
+    .main-nav {
+        display: none;
+    }
+}
