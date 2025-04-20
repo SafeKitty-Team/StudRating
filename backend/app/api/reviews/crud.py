@@ -1,8 +1,8 @@
 from typing import List, Optional, Dict, Any
-from sqlalchemy import select, update, delete
+from sqlalchemy import select, update, delete, func, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.models.reviews import Review
+from core.models.reviews import Review, ReviewEntityType
 
 
 async def create_review(
@@ -10,17 +10,13 @@ async def create_review(
         review_data: Dict[str, Any],
         user_id: Optional[int] = None,
 ) -> Review:
-    """
-    Создает новый отзыв в базе данных
+    """Создает новый отзыв в базе данных"""
+    # Обработка поля course_professor_id
+    if review_data.get("course_professor_id") == 0 or review_data.get("course_professor_id") is None:
+        # Удаляем поле, если значение 0 или None
+        review_data.pop("course_professor_id", None)
 
-    Args:
-        db: Асинхронная сессия базы данных
-        review_data: Данные отзыва
-        user_id: ID пользователя (опционально для анонимных отзывов)
-
-    Returns:
-        Созданный объект отзыва
-    """
+    # Создаем отзыв с переданными данными и ID пользователя
     review = Review(**review_data, user_id=user_id)
     db.add(review)
     await db.commit()
@@ -87,6 +83,10 @@ async def update_review(
     Returns:
         Обновленный объект отзыва или None, если не найден
     """
+    # Обработка поля course_professor_id
+    if review_data.get("course_professor_id") == 0:
+        review_data.pop("course_professor_id", None)
+
     await db.execute(
         update(Review)
         .where(Review.id == review_id)
@@ -178,3 +178,83 @@ async def approve_review(db: AsyncSession, review_id: int) -> Optional[Review]:
     )
     await db.commit()
     return await get_review(db, review_id)
+
+
+async def get_reviews_by_entity(
+        db: AsyncSession,
+        entity_type: ReviewEntityType,
+        entity_id: int,
+        include_moderated: bool = False
+) -> List[Review]:
+    """Получает все отзывы для конкретной сущности"""
+    query = select(Review).where(
+        (Review.entity_type == entity_type) & (Review.entity_id == entity_id)
+    )
+
+    if not include_moderated:
+        query = query.where(Review.is_on_moderation == False)
+
+    result = await db.execute(query)
+    return list(result.scalars().all())
+
+
+async def get_average_ratings_by_entity(
+        db: AsyncSession,
+        entity_type: ReviewEntityType,
+        entity_id: int,
+        include_moderated: bool = False
+) -> Dict[str, float | int]:
+    """
+    Вычисляет средние оценки по всем критериям для сущности
+
+    Args:
+        db: Асинхронная сессия базы данных
+        entity_type: Тип сущности (professor, subject, program, faculty, course_professor)
+        entity_id: ID сущности
+        include_moderated: Включать ли отзывы, находящиеся на модерации
+
+    Returns:
+        Словарь со средними оценками и количеством отзывов
+    """
+    # Базовое условие для запроса
+    conditions = [
+        Review.entity_type == entity_type,
+        Review.entity_id == entity_id
+    ]
+
+    # Если не включаем отзывы на модерации
+    if not include_moderated:
+        conditions.append(Review.is_on_moderation == False)
+
+    # Формируем запрос
+    query = select(
+        func.avg(Review.rating_overall).label("avg_overall"),
+        func.avg(Review.rating_difficulty).label("avg_difficulty"),
+        func.avg(Review.rating_usefulness).label("avg_usefulness"),
+        func.count(Review.id).label("reviews_count")
+    ).where(and_(*conditions))
+
+    # Выполняем запрос
+    result = await db.execute(query)
+    stats = result.first()
+
+    # Если нет отзывов, возвращаем нули
+    if not stats or stats.reviews_count == 0:
+        return {
+            "rating_overall": 0.0,
+            "rating_difficulty": 0.0,
+            "rating_usefulness": 0.0,
+            "average_total": 0.0,
+            "reviews_count": 0
+        }
+
+    # Рассчитываем общий средний рейтинг
+    avg_total = (stats.avg_overall + stats.avg_difficulty + stats.avg_usefulness) / 3
+
+    return {
+        "rating_overall": round(stats.avg_overall, 2),
+        "rating_difficulty": round(stats.avg_difficulty, 2),
+        "rating_usefulness": round(stats.avg_usefulness, 2),
+        "average_total": round(avg_total, 2),
+        "reviews_count": stats.reviews_count
+    }

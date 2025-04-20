@@ -1,6 +1,5 @@
 from typing import List
 
-
 from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -21,5 +20,8 @@ class Faculty(IDMixin, Base):
     name: Mapped[str] = mapped_column(String(150), nullable=False, unique=True)
     description: Mapped[str] = mapped_column(String(500), nullable=True)
 
+    programs: Mapped[List["Program"]] = relationship("Program", back_populates="faculty")
+    professors: Mapped[List["Professor"]] = relationship("Professor", back_populates="faculty")
+
     def __repr__(self) -> str:
-        return f"<Faculty(id={self.id}, name='{self.name}, description={self.description}, program={self.program})>"
+        return f"<Faculty(id={self.id}, name='{self.name}, description={self.description})>"

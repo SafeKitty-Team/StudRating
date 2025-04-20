@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlalchemy import Integer, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .base import Base
@@ -21,6 +23,12 @@ class Professor(IDMixin, Base):
     faculty_id: Mapped[int] = mapped_column(Integer, ForeignKey("faculty.id"))
     bio: Mapped[str] = mapped_column(String(500), nullable=True)
 
+    # Fix the relationship - change "professor" to "professors" to match Faculty model
+    faculty: Mapped["Faculty"] = relationship("Faculty", back_populates="professors")
+
+    # Add relationship to CourseProfessor
+    course_professors: Mapped[List["CourseProfessor"]] = relationship("CourseProfessor", back_populates="professor")
+
     def __repr__(self) -> str:
         return f"<Professor(id={self.id}, full_name='{self.full_name}', academic_title='{self.academic_title}', bio='{self.bio}')>"
 
@@ -28,15 +36,17 @@ class Professor(IDMixin, Base):
 class CourseProfessor(IDMixin, Base):
     """
     Модель SQLAlchemy для связи между курсами и преподавателями.
-
-    Атрибуты:
-        id (int): Уникальный идентификатор (наследуется от IDMixin).
-        subject_id (int): Идентификатор курса (внешний ключ на таблицу Subject).
-        professor_id (int): Идентификатор преподавателя (внешний ключ на таблицу Professor).
     """
 
     subject_id: Mapped[int] = mapped_column(Integer, ForeignKey("subject.id"))
     professor_id: Mapped[int] = mapped_column(Integer, ForeignKey("professor.id"))
+
+    # Fix and complete relationships
+    subject: Mapped["Subject"] = relationship("Subject", back_populates="course_professors")
+    professor: Mapped["Professor"] = relationship("Professor", back_populates="course_professors")
+
+    # Existing relationship to reviews
+    reviews: Mapped[List["Review"]] = relationship("Review", back_populates="course_professor")
 
     def __repr__(self) -> str:
         return f"<CourseProfessor(id={self.id}, subject_id={self.subject_id}, professor_id={self.professor_id})>"
