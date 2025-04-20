@@ -1,0 +1,356 @@
+.subject-detail-page {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.subject-header {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.subject-title-wrapper {
+    max-width: 80%;
+}
+
+.subject-title {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-color);
+}
+
+.subject-meta {
+    margin-bottom: 1rem;
+}
+
+.subject-department,
+.subject-professor {
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.subject-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.subject-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.action-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    text-decoration: none;
+    transition: all var(--transition);
+}
+
+.primary-action {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.primary-action:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+    color: white;
+}
+
+.subject-ratings {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    background-color: var(--background-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+}
+
+.rating-overall {
+    display: flex;
+    align-items: center;
+    background-color: var(--secondary-color);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius-pill);
+    margin-right: 1rem;
+}
+
+.rating-icon {
+    color: #f59e0b;
+    margin-right: 0.5rem;
+}
+
+.rating-overall .rating-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.rating-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.rating-item {
+    display: flex;
+    align-items: center;
+}
+
+.rating-label {
+    margin-right: 0.5rem;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+.rating-item .rating-value {
+    font-weight: 600;
+}
+
+.subject-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    gap: 1rem;
+}
+
+.tab-button {
+    padding: 0.75rem 1rem;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-weight: 500;
+    cursor: pointer;
+    position: relative;
+    white-space: nowrap;
+    transition: all var(--transition-fast);
+}
+
+.tab-button::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--primary-color);
+    transition: width var(--transition);
+}
+
+.tab-button.active {
+    color: var(--primary-color);
+}
+
+.tab-button.active::after {
+    width: 100%;
+}
+
+.tab-content {
+    padding: 1rem 0;
+}
+
+.subject-overview h2 {
+    font-size: 1.25rem;
+    margin: 1.5rem 0 1rem;
+    color: var(--text-color);
+}
+
+.subject-overview p {
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.subject-overview ul {
+    padding-left: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.subject-overview li {
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+.reviews-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.add-review-button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all var(--transition);
+}
+
+.add-review-button:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+    color: white;
+}
+
+.no-reviews {
+    text-align: center;
+    padding: 3rem 2rem;
+    background-color: rgba(var(--primary-color-rgb), 0.05);
+    border-radius: var(--border-radius);
+    color: var(--text-light);
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.review-card {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    padding: 1.25rem;
+    border: 1px solid var(--border-color);
+    transition: all var(--transition);
+}
+
+.review-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.review-rating {
+    display: flex;
+    align-items: center;
+    color: #f59e0b;
+}
+
+.rating-number {
+    margin-left: 0.25rem;
+    color: var(--text-color);
+    font-weight: 600;
+}
+
+.review-date {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.review-meta {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.review-difficulty,
+.review-usefulness {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.review-label {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.review-value {
+    font-weight: 600;
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius-sm);
+}
+
+.review-text {
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .subject-title-wrapper {
+        max-width: 100%;
+    }
+
+    .subject-actions {
+        position: static;
+        margin: 1rem 0;
+    }
+
+    .action-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .subject-ratings {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .rating-overall {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+
+    .rating-stats {
+        width: 100%;
+    }
+
+    .subject-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 0;
+    }
+
+    .tab-button {
+        flex: 1;
+        text-align: center;
+        padding: 0.75rem 0.5rem;
+    }
+
+    .reviews-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .add-review-button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .subject-detail-page {
+        padding: 1rem;
+    }
+
+    .review-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}

@@ -1,0 +1,180 @@
+/* Enhanced Loading Screen Styling */
+.loading-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - var(--header-height) - var(--footer-height));
+    width: 100%;
+    padding: 2rem;
+    background-color: var(--background-color);
+}
+
+.loading-spinner-container {
+    margin-bottom: 1.5rem;
+}
+
+.loading-spinner {
+    border: 4px solid rgba(79, 70, 229, 0.1);
+    border-left-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+.loading-spinner-small {
+    width: 24px;
+    height: 24px;
+    border-width: 2px;
+}
+
+.loading-spinner-medium {
+    width: 48px;
+    height: 48px;
+    border-width: 3px;
+}
+
+.loading-spinner-large {
+    width: 64px;
+    height: 64px;
+    border-width: 4px;
+}
+
+.loading-message {
+    color: var(--text-color);
+    font-size: 1.1rem;
+    text-align: center;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Inline loading indicator for component-level loading */
+.loading-inline {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+
+.loading-inline-message {
+    margin-top: 0.75rem;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Animation for rotation */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Animation for pulsating text */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+/* Styles for the variant in private routes */
+.private-route-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 250px;
+    width: 100%;
+    padding: 1.5rem;
+    background-color: var(--background-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+.private-route-loading .loading-spinner {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 1rem;
+    border-width: 3px;
+}
+
+.private-route-loading p {
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+/* Styles for auth initialization */
+.auth-initializing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
+    background-color: var(--background-color);
+}
+
+.auth-initializing .loading-spinner {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 1.5rem;
+}
+
+.auth-initializing p {
+    color: var(--text-color);
+    font-size: 1.1rem;
+}
+
+/* Skeleton loading styles */
+.skeleton-loader {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--border-color);
+    border-radius: var(--border-radius);
+}
+
+.skeleton-loader::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transform: translateX(-100%);
+    background-image: linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0) 0,
+            rgba(255, 255, 255, 0.2) 20%,
+            rgba(255, 255, 255, 0.5) 60%,
+            rgba(255, 255, 255, 0)
+    );
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Dark theme adjustments */
+body.dark-theme .loading-spinner {
+    border-color: rgba(255, 255, 255, 0.1);
+    border-left-color: var(--primary-color);
+}
+
+body.dark-theme .skeleton-loader {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-theme .skeleton-loader::after {
+    background-image: linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0) 0,
+            rgba(255, 255, 255, 0.05) 20%,
+            rgba(255, 255, 255, 0.1) 60%,
+            rgba(255, 255, 255, 0)
+    );
+}
