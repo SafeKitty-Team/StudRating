@@ -16,7 +16,7 @@ from .crud import (
     get_reviews_on_moderation,
     approve_review, get_reviews_by_entity
 )
-from .schemas import ReviewCreate, ReviewRead
+from .schemas import ReviewCreate, ReviewRead, ReviewEntityType
 from .utils import contains_bad_words
 
 router = APIRouter(prefix="/reviews", tags=["reviews"])
@@ -138,7 +138,7 @@ async def delete_existing_review(
 
 @router.get("/entity/{entity_type}/{entity_id}", response_model=List[ReviewRead])
 async def read_reviews_by_entity(
-        entity_type: SchemaReviewEntityType,
+        entity_type: ReviewEntityType,
         entity_id: int,
         db: AsyncSession = Depends(db_helper.session_getter),
 ):
