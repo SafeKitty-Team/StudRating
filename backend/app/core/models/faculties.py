@@ -20,7 +20,6 @@ class Faculty(IDMixin, Base):
     name: Mapped[str] = mapped_column(String(150), nullable=False, unique=True)
     description: Mapped[str] = mapped_column(String(500), nullable=True)
 
-    # These relationships already match with the fixed models
     programs: Mapped[List["Program"]] = relationship("Program", back_populates="faculty")
     professors: Mapped[List["Professor"]] = relationship("Professor", back_populates="faculty")
 
