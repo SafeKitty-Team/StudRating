@@ -52,3 +52,9 @@ async def update_faculty(
     await session.commit()
     await session.refresh(faculty)
     return faculty
+
+
+async def get_all_faculties(session: AsyncSession) -> list:
+    """Возвращает все факультеты из базы данных."""
+    result = await session.execute(select(Faculty))
+    return result.scalars().all()

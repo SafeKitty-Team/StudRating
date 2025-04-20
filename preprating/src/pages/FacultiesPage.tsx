@@ -1,87 +1,81 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'; // Мы будем использовать этот импорт
+import { Link } from 'react-router-dom';
 import { facultiesApi } from '../api/facultiesApi';
-// Удаляем неиспользуемые импорты
-import { Faculty } from '../models/types';
+import { reviewsApi } from '../api/reviewsApi';
+import { Faculty, AverageRatings, EntityType } from '../models/types';
 import '../styles/facultiesPage.css';
 
 const FacultiesPage: React.FC = () => {
     const [faculties, setFaculties] = useState<Faculty[]>([]);
+    const [ratings, setRatings] = useState<Record<number, AverageRatings>>({});
     const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchFaculties = async () => {
+        const fetchData = async () => {
             try {
                 setIsLoading(true);
+                setError(null);
                 const data = await facultiesApi.getAllFaculties();
                 setFaculties(data);
-            } catch (error) {
-                console.error('Error fetching faculties:', error);
+                // fetch review stats for each faculty
+                const statsEntries = await Promise.all(
+                    data.map(async fac => {
+                        const stat = await reviewsApi.getEntityRatings('faculty' as EntityType, fac.id);
+                        return [fac.id, stat] as [number, AverageRatings];
+                    })
+                );
+                setRatings(Object.fromEntries(statsEntries));
+            } catch (err) {
+                console.error(err);
+                setError('Не удалось загрузить данные. Попробуйте позже.');
             } finally {
                 setIsLoading(false);
             }
         };
-
-        fetchFaculties();
+        fetchData();
     }, []);
+
+    if (isLoading) return <div className="loading">Загрузка...</div>;
+
+    if (error) return (
+        <div className="error-container">
+            <div className="error-message">{error}</div>
+            <button className="retry-button" onClick={() => window.location.reload()}>
+                Попробовать снова
+            </button>
+        </div>
+    );
 
     return (
         <div className="faculties-page">
-            <h1 className="page-title">Факультеты и кафедры</h1>
-
-            {isLoading ? (
-                <div className="loading">Загрузка...</div>
+            <h1 className="page-title">Факультеты</h1>
+            {faculties.length === 0 ? (
+                <div className="no-faculties">Факультеты не найдены</div>
             ) : (
                 <div className="faculties-list">
                     {faculties.map(faculty => (
                         <div key={faculty.id} className="faculty-card">
                             <h2 className="faculty-name">{faculty.name}</h2>
-                            <p className="faculty-description">{faculty.description || 'Описание отсутствует'}</p>
-
-                            <div className="faculty-metrics">
-                                <div className="metric">
-                                    <span className="metric-value">15</span>
-                                    <span className="metric-label">Кафедр</span>
+                            <p className="faculty-description">
+                                {faculty.description ?? 'Описание отсутствует'}
+                            </p>
+                            <div className="faculty-actions">
+                                <div className="faculty-rating-block">
+                  <span className="rating-value">
+                    {ratings[faculty.id]?.average_total.toFixed(1) ?? '—'}
+                  </span>
+                                    <span className="rating-icon">★</span>
+                                    <span className="reviews-count">
+                    {ratings[faculty.id]?.reviews_count ?? 0} отзывов
+                  </span>
                                 </div>
-                                <div className="metric">
-                                    <span className="metric-value">42</span>
-                                    <span className="metric-label">Программ</span>
-                                </div>
-                                <div className="metric">
-                                    <span className="metric-value">4.7</span>
-                                    <span className="metric-label">Рейтинг</span>
-                                </div>
-                            </div>
-
-                            <h3 className="department-section-title">Кафедры</h3>
-                            <div className="departments-list">
-                                <div className="department-item">
-                                    <h4 className="department-name">
-                                        <Link to="/faculties/1/departments/1">Кафедра высшей математики</Link>
-                                    </h4>
-                                    <div className="department-info">
-                                        <span className="department-courses-count">25 курсов</span>
-                                        <span className="department-rating">★ 4.6</span>
-                                    </div>
-                                </div>
-                                <div className="department-item">
-                                    <h4 className="department-name">
-                                        <Link to="/faculties/1/departments/2">Кафедра информационных систем</Link>
-                                    </h4>
-                                    <div className="department-info">
-                                        <span className="department-courses-count">18 курсов</span>
-                                        <span className="department-rating">★ 4.8</span>
-                                    </div>
-                                </div>
-                                <div className="department-item">
-                                    <h4 className="department-name">
-                                        <Link to="/faculties/1/departments/3">Кафедра программирования</Link>
-                                    </h4>
-                                    <div className="department-info">
-                                        <span className="department-courses-count">30 курсов</span>
-                                        <span className="department-rating">★ 4.9</span>
-                                    </div>
-                                </div>
+                                <Link
+                                    to={`/review/new?entityType=faculty&entityId=${faculty.id}`}
+                                    className="add-review-btn"
+                                >
+                                    Оставить отзыв
+                                </Link>
                             </div>
                         </div>
                     ))}

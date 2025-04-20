@@ -68,7 +68,6 @@ const Header: React.FC = () => {
                 <nav className={`main-nav ${isMenuOpen ? 'nav-open' : ''}`}>
                     <Link to="/subjects" className="nav-link">Предметы</Link>
                     <Link to="/professors" className="nav-link">Преподаватели</Link>
-                    <Link to="/faculties" className="nav-link">Факультеты</Link>
 
                     {isAuthenticated && (user?.roles === 'admin' || user?.roles === 'superuser') && (
                         <Link to="/admin" className="nav-link nav-admin">
