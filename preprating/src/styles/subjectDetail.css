@@ -1,0 +1,157 @@
+.subject-detail-page {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+}
+
+.subject-header {
+    margin-bottom: 24px;
+}
+
+.subject-title {
+    font-size: 28px;
+    margin-bottom: 12px;
+}
+
+.subject-meta {
+    margin-bottom: 16px;
+}
+
+.subject-department,
+.subject-professor {
+    color: var(--text-light);
+    margin-bottom: 6px;
+}
+
+.subject-tags {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.subject-ratings {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.rating-overall {
+    display: flex;
+    align-items: center;
+    background-color: var(--secondary-color);
+    padding: 8px 16px;
+    border-radius: 20px;
+    margin-right: 20px;
+}
+
+.rating-icon {
+    color: #ffc107;
+    margin-right: 8px;
+    font-size: 24px;
+}
+
+.rating-overall .rating-value {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.rating-stats {
+    display: flex;
+    gap: 16px;
+}
+
+.rating-item {
+    display: flex;
+    align-items: center;
+}
+
+.rating-label {
+    margin-right: 6px;
+    color: var(--text-light);
+}
+
+.rating-item .rating-value {
+    font-weight: bold;
+}
+
+.subject-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 24px;
+}
+
+.tab-button {
+    padding: 12px 24px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab-button.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+.tab-content {
+    padding: 12px 0;
+}
+
+.subject-overview h2 {
+    font-size: 20px;
+    margin-top: 24px;
+    margin-bottom: 16px;
+}
+
+.subject-overview p,
+.subject-overview ul {
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.subject-overview ul {
+    padding-left: 20px;
+}
+
+.subject-overview li {
+    margin-bottom: 8px;
+}
+
+.reviews-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.add-review-button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 8px 16px;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.add-review-button:hover {
+    background-color: var(--primary-dark);
+    color: white;
+}
+
+.no-reviews {
+    text-align: center;
+    padding: 40px 0;
+    color: var(--text-light);
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}

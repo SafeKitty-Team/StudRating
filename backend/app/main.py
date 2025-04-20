@@ -2,6 +2,8 @@ import uvicorn
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 
+from fastapi.middleware.cors import CORSMiddleware
+
 from core.models import db_helper
 from core.config import settings
 from api import router as api_router
@@ -17,6 +19,13 @@ async def lifespan(lifespan_app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # любые Origin
+    allow_credentials=True,  # передавать куки/credentials
+    allow_methods=["*"],  # любые HTTP-методы
+    allow_headers=["*"],  # любые заголовки
+)
 app.include_router(api_router)
 
 if __name__ == "__main__":
