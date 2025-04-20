@@ -1,23 +1,23 @@
-from typing import List, Optional, Annotated
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from typing import List
+
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.auth.dependencies import get_current_admin_user
+from api.auth.utils import get_current_user
 from core.models.db_helper import db_helper
 from core.models.users import User
-from .schemas import ReviewCreate, ReviewRead, ReviewUpdate
 from .crud import (
     create_review,
     get_review,
     get_reviews,
-    update_review,
     delete_review,
     get_reviews_by_course_professor,
     get_reviews_on_moderation,
     approve_review, get_reviews_by_entity
 )
+from .schemas import ReviewCreate, ReviewRead
 from .utils import contains_bad_words
-from api.auth.utils import get_current_user
-from api.auth.dependencies import get_current_admin_user
 
 router = APIRouter(prefix="/reviews", tags=["reviews"])
 
@@ -133,6 +133,8 @@ async def delete_existing_review(
     success = await delete_review(db, review_id)
     if not success:
         raise HTTPException(status_code=404, detail="Отзыв не найден")
+
+
 
 @router.get("/entity/{entity_type}/{entity_id}", response_model=List[ReviewRead])
 async def read_reviews_by_entity(
