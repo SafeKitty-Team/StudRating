@@ -4,8 +4,8 @@ from enum import Enum
 
 class ProgramLevel(str, Enum):
     specialist = "specialist"
-    bachelor = "sachelor"
-    master = "saster"
+    bachelor = "bachelor"  # Исправлена опечатка с "sachelor"
+    master = "master"      # Исправлена опечатка с "saster"
     phd = "phd"
 
 

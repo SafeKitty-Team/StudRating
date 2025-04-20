@@ -23,7 +23,11 @@ class Professor(IDMixin, Base):
     faculty_id: Mapped[int] = mapped_column(Integer, ForeignKey("faculty.id"))
     bio: Mapped[str] = mapped_column(String(500), nullable=True)
 
-    faculty: Mapped["Faculty"] = relationship("Faculty", back_populates="professor")
+    # Fix the relationship - change "professor" to "professors" to match Faculty model
+    faculty: Mapped["Faculty"] = relationship("Faculty", back_populates="professors")
+
+    # Add relationship to CourseProfessor
+    course_professors: Mapped[List["CourseProfessor"]] = relationship("CourseProfessor", back_populates="professor")
 
     def __repr__(self) -> str:
         return f"<Professor(id={self.id}, full_name='{self.full_name}', academic_title='{self.academic_title}', bio='{self.bio}')>"
@@ -37,7 +41,11 @@ class CourseProfessor(IDMixin, Base):
     subject_id: Mapped[int] = mapped_column(Integer, ForeignKey("subject.id"))
     professor_id: Mapped[int] = mapped_column(Integer, ForeignKey("professor.id"))
 
-    # Добавляем отношение к отзывам
+    # Fix and complete relationships
+    subject: Mapped["Subject"] = relationship("Subject", back_populates="course_professors")
+    professor: Mapped["Professor"] = relationship("Professor", back_populates="course_professors")
+
+    # Existing relationship to reviews
     reviews: Mapped[List["Review"]] = relationship("Review", back_populates="course_professor")
 
     def __repr__(self) -> str:

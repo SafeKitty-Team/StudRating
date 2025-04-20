@@ -22,7 +22,11 @@ class Program(IDMixin, Base):
     )
     faculty_id: Mapped[int] = mapped_column(ForeignKey("faculty.id"), nullable=False)
 
-    faculty: Mapped[Faculty] = relationship("Faculty", back_populates="program")
+    # Fix the relationship - change "program" to "programs" to match Faculty model
+    faculty: Mapped[Faculty] = relationship("Faculty", back_populates="programs")
+
+    # Add relationship to Subject model
+    subjects: Mapped[list["Subject"]] = relationship("Subject", back_populates="program")
 
     def __repr__(self):
         return (

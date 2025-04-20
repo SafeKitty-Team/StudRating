@@ -20,7 +20,11 @@ class Subject(IDMixin, Base):
     description: Mapped[str] = mapped_column(String(500), nullable=True)
     program_id: Mapped[int] = mapped_column(Integer, ForeignKey("program.id"))
 
-    program: Mapped[List["Program"]] = relationship("Program", back_populates="subject")
+    # Fix the relationship to match Program model
+    program: Mapped["Program"] = relationship("Program", back_populates="subjects")
+
+    # Add relationship to CourseProfessor
+    course_professors: Mapped[List["CourseProfessor"]] = relationship("CourseProfessor", back_populates="subject")
 
     def __repr__(self) -> str:
         return f"<Subject(id={self.id}, name='{self.name}', description='{self.description}')>"

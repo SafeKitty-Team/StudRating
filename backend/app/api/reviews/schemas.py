@@ -5,11 +5,12 @@ from pydantic import BaseModel, Field
 
 
 class ReviewEntityType(str, Enum):
-    PROFESSOR = "professor"
-    SUBJECT = "subject"
-    PROGRAM = "program"
-    FACULTY = "faculty"
-    COURSE_PROFESSOR = "course_professor"
+    # Используем строчные буквы для соответствия базе данных
+    professor = "professor"
+    subject = "subject"
+    program = "program"
+    faculty = "faculty"
+    course_professor = "course_professor"
 
 
 class ReviewBase(BaseModel):
@@ -33,17 +34,18 @@ class ReviewCreate(ReviewBase):
 
     entity_type: ReviewEntityType
     entity_id: int
-    course_professor_id: int | None = None  # для обратной совместимости
+    # Делаем course_professor_id опциональным с None по умолчанию
+    course_professor_id: Optional[int] = None
 
 
 class ReviewUpdate(BaseModel):
     """Схема для обновления существующего отзыва"""
 
-    rating_overall: int | None = Field(None, ge=1, le=5)
-    rating_difficulty: int | None = Field(None, ge=1, le=5)
-    rating_usefulness: int | None = Field(None, ge=1, le=5)
-    text_review: str | None = None
-    is_on_moderation: bool | None = None
+    rating_overall: Optional[int] = Field(None, ge=1, le=5)
+    rating_difficulty: Optional[int] = Field(None, ge=1, le=5)
+    rating_usefulness: Optional[int] = Field(None, ge=1, le=5)
+    text_review: Optional[str] = None
+    is_on_moderation: Optional[bool] = None
 
 
 class ReviewRead(ReviewBase):
@@ -54,3 +56,5 @@ class ReviewRead(ReviewBase):
     entity_id: int
     created_at: datetime
     is_on_moderation: bool
+    # Делаем course_professor_id опциональным в ответе
+    course_professor_id: Optional[int] = None

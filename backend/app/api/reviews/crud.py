@@ -11,6 +11,12 @@ async def create_review(
         user_id: Optional[int] = None,
 ) -> Review:
     """Создает новый отзыв в базе данных"""
+    # Обработка поля course_professor_id
+    if review_data.get("course_professor_id") == 0 or review_data.get("course_professor_id") is None:
+        # Удаляем поле, если значение 0 или None
+        review_data.pop("course_professor_id", None)
+
+    # Создаем отзыв с переданными данными и ID пользователя
     review = Review(**review_data, user_id=user_id)
     db.add(review)
     await db.commit()
@@ -77,6 +83,10 @@ async def update_review(
     Returns:
         Обновленный объект отзыва или None, если не найден
     """
+    # Обработка поля course_professor_id
+    if review_data.get("course_professor_id") == 0:
+        review_data.pop("course_professor_id", None)
+
     await db.execute(
         update(Review)
         .where(Review.id == review_id)
@@ -180,21 +190,6 @@ async def get_reviews_by_entity(
     query = select(Review).where(
         (Review.entity_type == entity_type) & (Review.entity_id == entity_id)
     )
-
-    if not include_moderated:
-        query = query.where(Review.is_on_moderation == False)
-
-    result = await db.execute(query)
-    return list(result.scalars().all())
-
-
-async def get_reviews_by_course_professor(
-        db: AsyncSession,
-        course_professor_id: int,
-        include_moderated: bool = False
-) -> List[Review]:
-    """Получает все отзывы для конкретной комбинации курс-преподаватель (обратная совместимость)"""
-    query = select(Review).where(Review.course_professor_id == course_professor_id)
 
     if not include_moderated:
         query = query.where(Review.is_on_moderation == False)

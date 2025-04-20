@@ -8,11 +8,12 @@ from .mixins.timestamp_mixin import TimestampMixin
 
 
 class ReviewEntityType(str, Enum):
-    PROFESSOR = "professor"
-    SUBJECT = "subject"
-    PROGRAM = "program"
-    FACULTY = "faculty"
-    COURSE_PROFESSOR = "course_professor"  # для обратной совместимости
+    # Используем строчные буквы для соответствия базе данных
+    professor = "professor"
+    subject = "subject"
+    program = "program"
+    faculty = "faculty"
+    course_professor = "course_professor"  # для обратной совместимости
 
 
 class Review(IDMixin, TimestampMixin, Base):
@@ -37,13 +38,13 @@ class Review(IDMixin, TimestampMixin, Base):
         Integer, ForeignKey("user.id"), nullable=True
     )
 
-    # Новые поля для полиморфной ассоциации
+    # Используем SQLAlchemyEnum с именем "review_entity_type", как в базе данных
     entity_type: Mapped[ReviewEntityType] = mapped_column(
-        SQLAlchemyEnum(ReviewEntityType), nullable=False
+        SQLAlchemyEnum(ReviewEntityType, name="review_entity_type"), nullable=False
     )
     entity_id: Mapped[int] = mapped_column(Integer, nullable=False)
 
-    # Для обратной совместимости
+    # Делаем nullable=True для обратной совместимости
     course_professor_id: Mapped[int | None] = mapped_column(
         Integer, ForeignKey("course_professor.id"), nullable=True
     )

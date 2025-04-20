@@ -36,6 +36,11 @@ async def create_new_review(
     needs_moderation = contains_bad_words(review_dict["text_review"])
     review_dict["is_on_moderation"] = needs_moderation
 
+    # Проверка значения course_professor_id
+    if review_dict.get("course_professor_id", 0) == 0:
+        # Если равно 0, то удаляем его из словаря
+        review_dict.pop("course_professor_id", None)
+
     # Создаем отзыв, привязав его к текущему пользователю
     review = await create_review(db, review_dict, user_id=current_user.id)
     return review
@@ -53,6 +58,11 @@ async def create_anonymous_review(
     # Проверяем наличие запрещенных слов
     needs_moderation = contains_bad_words(review_dict["text_review"])
     review_dict["is_on_moderation"] = needs_moderation
+
+    # Проверка значения course_professor_id
+    if review_dict.get("course_professor_id", 0) == 0:
+        # Если равно 0, то удаляем его из словаря
+        review_dict.pop("course_professor_id", None)
 
     # Создаем отзыв без привязки к пользователю
     review = await create_review(db, review_dict)
@@ -133,7 +143,6 @@ async def delete_existing_review(
     success = await delete_review(db, review_id)
     if not success:
         raise HTTPException(status_code=404, detail="Отзыв не найден")
-
 
 
 @router.get("/entity/{entity_type}/{entity_id}", response_model=List[ReviewRead])
