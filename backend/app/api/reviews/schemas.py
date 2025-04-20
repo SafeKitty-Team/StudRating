@@ -58,3 +58,13 @@ class ReviewRead(ReviewBase):
     is_on_moderation: bool
     # Делаем course_professor_id опциональным в ответе
     course_professor_id: Optional[int] = None
+
+
+class AverageRatings(BaseModel):
+    """Схема для средних оценок сущности"""
+
+    rating_overall: float = Field(..., description="Средняя общая оценка")
+    rating_difficulty: float = Field(..., description="Средняя оценка сложности")
+    rating_usefulness: float = Field(..., description="Средняя оценка полезности")
+    average_total: float = Field(..., description="Среднее значение по всем показателям")
+    reviews_count: int = Field(..., description="Количество отзывов")

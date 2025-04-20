@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.auth.dependencies import get_current_admin_user
@@ -14,9 +14,11 @@ from .crud import (
     delete_review,
     get_reviews_by_course_professor,
     get_reviews_on_moderation,
-    approve_review, get_reviews_by_entity
+    approve_review,
+    get_reviews_by_entity,
+    get_average_ratings_by_entity
 )
-from .schemas import ReviewCreate, ReviewRead, ReviewEntityType
+from .schemas import ReviewCreate, ReviewRead, ReviewEntityType, AverageRatings
 from .utils import contains_bad_words
 
 router = APIRouter(prefix="/reviews", tags=["reviews"])
@@ -105,6 +107,29 @@ async def read_reviews_by_course_professor(
     """Получение всех отзывов для конкретной комбинации курс-преподаватель (для обратной совместимости)"""
     reviews = await get_reviews_by_course_professor(db, course_professor_id)
     return reviews
+
+
+@router.get("/stats/{entity_type}/{entity_id}", response_model=AverageRatings)
+async def get_entity_ratings_stats(
+        entity_type: ReviewEntityType,
+        entity_id: int,
+        include_moderated: bool = Query(False, description="Включать ли отзывы на модерации"),
+        db: AsyncSession = Depends(db_helper.session_getter),
+):
+    """
+    Получение средних оценок для указанной сущности
+
+    Args:
+        entity_type: Тип сущности (professor, subject, program, faculty, course_professor)
+        entity_id: ID сущности
+        include_moderated: Включать ли отзывы на модерации
+        db: Сессия базы данных
+
+    Returns:
+        Объект со средними оценками и количеством отзывов
+    """
+    stats = await get_average_ratings_by_entity(db, entity_type, entity_id, include_moderated)
+    return stats
 
 
 # Административные маршруты (требуют прав администратора)
