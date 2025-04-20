@@ -1,0 +1,200 @@
+.search-results-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+.page-title {
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-color);
+}
+
+/* Фильтры поиска */
+.search-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+}
+
+.filter-btn {
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius-pill);
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+}
+
+.filter-btn:hover {
+    border-color: var(--primary-color);
+}
+
+.filter-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* Результаты поиска */
+.search-results-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    padding: 1.25rem;
+    box-shadow: var(--shadow);
+    transition: all var(--transition);
+    border: 1px solid var(--border-color);
+    position: relative;
+}
+
+.search-result-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-light);
+}
+
+.search-result-item.professor {
+    border-left: 4px solid #4f46e5;
+}
+
+.search-result-item.subject {
+    border-left: 4px solid #10b981;
+}
+
+.result-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.professor .result-icon {
+    color: #4f46e5;
+    background-color: rgba(79, 70, 229, 0.1);
+}
+
+.subject .result-icon {
+    color: #10b981;
+    background-color: rgba(16, 185, 129, 0.1);
+}
+
+.result-content {
+    flex: 1;
+}
+
+.result-title {
+    font-size: 1.125rem;
+    margin-bottom: 0.25rem;
+}
+
+.result-title a {
+    color: var(--text-color);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.result-title a:hover {
+    color: var(--primary-color);
+}
+
+.result-type {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.result-description {
+    font-size: 0.875rem;
+    color: var(--text-light);
+    max-width: 600px;
+}
+
+.result-link {
+    position: absolute;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    color: var(--primary-color);
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all var(--transition-fast);
+}
+
+.result-link:hover {
+    transform: translateX(5px);
+}
+
+/* Пустое состояние */
+.empty-search,
+.no-results {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem 1rem;
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+.empty-search-icon,
+.no-results-icon {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    color: var(--text-muted);
+}
+
+.empty-search h2,
+.no-results h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-color);
+}
+
+.empty-search p,
+.no-results p {
+    color: var(--text-light);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .search-result-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .result-icon {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+
+    .result-link {
+        position: static;
+        margin-top: 1rem;
+        align-self: flex-end;
+    }
+}

@@ -4,6 +4,7 @@ export type EntityType = 'professor' | 'subject' | 'program' | 'faculty' | 'cour
 
 export interface User {
     id: number;
+    email?: string; // Добавляем email как опциональное поле
     roles: 'user' | 'admin' | 'superuser';
     created_at: string;
 }
