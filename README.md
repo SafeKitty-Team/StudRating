@@ -1,17 +1,33 @@
-# Viribus-Unitis
+# ПрепРейтинг
 
-docker-compose up --build
+## Основная информация
 
+> *ПрепРейтинг* — анонимная система обратной связи о курсах и преподавателях, кафедрах, направляениях, предметах
+> Проблема: Отсутствие прозрачной информации о качестве курсов перед их выбором.
+> Решение: Платформа с рейтингами и отзывами о курсах и преподавателях, анализом сложности и практической пользы
+> предметов.
 
-если не запускается
+## Как запустить?
 
-docker-compose down --rmi all --volumes --remove-orphans
+### 1. Создать `./backend/.env`
 
-docker system prune --all --volumes --force
+```bash
+cp ./backend/.env.example ./backend/.env
+```
 
+> Измените `./backend/.env`, если нужно
 
-#### Миграции
+### 2. Запуск backend frontend и db
+
+```bash
+docker compose --env-file ./backend/.env  up --build
+```
+
+### 3. Накатить миграции
+
 ```bash
 cd backend/app &&
 alembic upgrade head
 ```
+
+### 4. Открыть [сайт](http://127.0.0.1:3000/) или [api](http://127.0.0.1:8000/docs)
